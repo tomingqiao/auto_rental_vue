@@ -1,24 +1,18 @@
-import request from '@/utils/request'
+import requestHttp from '@/utils/request'
 
-export function login(data) {
-  return request({
-    url: '/vue-element-admin/user/login',
-    method: 'post',
-    data
-  })
+
+export async function login(data) {
+  return await requestHttp.login('/rental/user/login', data)
 }
 
-export function getInfo(token) {
-  return request({
-    url: '/vue-element-admin/user/info',
-    method: 'get',
-    params: { token }
-  })
+export async function getInfo() {
+  return await requestHttp.get('/rental/auth/getInfo')
 }
 
-export function logout() {
-  return request({
-    url: '/vue-element-admin/user/logout',
-    method: 'post'
-  })
+export async function logout(param) {
+  return await requestHttp.post('/rental/auth/logout',param)
+}
+
+export async function getMenuList() {
+  return await requestHttp.get('/rental/auth/menuList')
 }

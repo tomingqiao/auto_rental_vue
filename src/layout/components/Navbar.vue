@@ -89,7 +89,7 @@ export default {
         await this.$store.dispatch('user/logout');
 
         // 跳转到登录页面，添加 redirect 参数
-        this.$router.push(`/login?redirect=${this.$route.fullPath}`);
+        this.$router.push(`/login`);
       } catch (error) {
         // 用户取消退出
         this.$message({

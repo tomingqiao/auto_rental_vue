@@ -86,7 +86,7 @@ service.interceptors.response.use(
 const requestHttp = {
   post(url, params) {
     return service.post(url, params, {
-      transformRequest: [(params) =>{
+      transformRequest: [(params) => {
         return JSON.stringify(params)
       }],
       headers: {
@@ -96,7 +96,7 @@ const requestHttp = {
   },
   put(url, params) {
     return service.put(url, params, {
-      transformRequest: [(params) =>{
+      transformRequest: [(params) => {
         return JSON.stringify(params)
       }],
       headers: {
@@ -124,18 +124,19 @@ const requestHttp = {
         }
       }
       _params = _params.substr(0, _params.length - 1)
-      if (_params) {
-        return service.delete(`${url}${_params}`).catch(err => {
-          message.error(err.msg)
-          return Promise.reject(err)
-        })
-      } else {
-        return service.delete(url).catch(err => {
-          message.error(err.msg)
-          return Promise.reject(err)
-        })
-      }
     }
+    if (_params) {
+      return service.delete(`${url}${_params}`).catch(err => {
+        message.error(err.msg)
+        return Promise.reject(err)
+      })
+    } else {
+      return service.delete(url).catch(err => {
+        message.error(err.msg)
+        return Promise.reject(err)
+      })
+    }
+
   },
   getRestFulApi(url, params) {
     let _params
@@ -165,7 +166,7 @@ const requestHttp = {
   },
   login(url, params) {
     return service.post(url, params, {
-      transformRequest: [(params) =>{
+      transformRequest: [(params) => {
         return qs.stringify(params)
       }],
       headers: {

@@ -1,5 +1,5 @@
 import { login, logout, getInfo } from '@/api/user'
-import { getToken, setToken, removeToken ,removeSessionStorage } from '@/utils/auth'
+import { getToken, setToken, removeToken, removeSessionStorage } from '@/utils/auth'
 import router, { resetRouter } from '@/router'
 
 const state = {
@@ -7,7 +7,8 @@ const state = {
   name: '',
   avatar: '',
   introduction: '',
-  roles: []
+  roles: [],
+  createrId: ''
 }
 
 const mutations = {
@@ -25,6 +26,9 @@ const mutations = {
   },
   SET_ROLES: (state, roles) => {
     state.roles = roles
+  },
+  SET_CREATERID: (state, id) => {
+    state.createrId = id
   }
 }
 
@@ -54,17 +58,19 @@ const actions = {
           reject('Verification failed, please Login again.')
         }
 
-        const { roles, name, avatar, introduction } = data
+        const { roles, name, avatar, introduction, id } = data
 
         // roles must be a non-empty array
         if (!roles || roles.length <= 0) {
-          reject('getInfo: roles must be a non-null array!')
+          reject('该用户没有分配角色,无法登录!')
         }
 
         commit('SET_ROLES', roles)
         commit('SET_NAME', name)
+        commit('SET_CREATERID', id)
         commit('SET_AVATAR', avatar)
         commit('SET_INTRODUCTION', introduction)
+        sessionStorage.setItem('permissionCode', JSON.stringify(roles))
         resolve(data)
       }).catch(error => {
         reject(error)
@@ -75,19 +81,19 @@ const actions = {
   // user logout
   logout({ commit, state, dispatch }) {
     return new Promise((resolve, reject) => {
-        logout(state.token).then(() => {
-          commit('SET_TOKEN', '')
-          commit('SET_ROLES', [])
-          removeToken()
-          resetRouter()
-          removeSessionStorage()
-          // reset visited views and cached views
-          // to fixed https://github.com/PanJiaChen/vue-element-admin/issues/2485
-          dispatch('tagsView/delAllViews', null, { root: true })
-          resolve()
-        }).catch(error => {
-          reject(error)
-        })
+      logout(state.token).then(() => {
+        commit('SET_TOKEN', '')
+        commit('SET_ROLES', [])
+        removeToken()
+        resetRouter()
+        removeSessionStorage()
+        // reset visited views and cached views
+        // to fixed https://github.com/PanJiaChen/vue-element-admin/issues/2485
+        dispatch('tagsView/delAllViews', null, { root: true })
+        resolve()
+      }).catch(error => {
+        reject(error)
+      })
     })
   },
 

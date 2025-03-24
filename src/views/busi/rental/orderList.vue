@@ -2,43 +2,49 @@
     <div>
         <el-main>
             <el-form :inline="true" size="small" label-width="100px" :model="orderModel">
-                <el-form-item label="订单编号">
+                <el-form-item label="订单编号:">
                     <el-input v-model="orderModel.orderNum" placeholder="请输入订单编号"></el-input>
                 </el-form-item>
-                <el-form-item label="车牌号码">
+                <el-form-item label="车牌号码:">
                     <el-input v-model="orderModel.autoNum" placeholder="车牌号码"></el-input>
                 </el-form-item>
-                <el-form-item label="客户名称">
+                <el-form-item label="客户名称:">
                     <el-input v-model="orderModel.customerName" placeholder="请输入客户名称"></el-input>
                 </el-form-item>
-                <el-form-item label="客户电话">
+                <el-form-item label="客户电话:">
                     <el-input v-model="orderModel.customerTel" placeholder="请输入客户电话"></el-input>
                 </el-form-item>
-                <el-form-item>
-                    <el-button type="primary" icon="el-icon-search" @click="onSubmit">查询</el-button>
-                    <el-button type="warning" icon="el-icon-refresh" @click="resetForm">重置</el-button>
+                <el-form-item label="操作:">
+                    <el-button type="primary" :icon="getPermissionIcon('busi:order:select')"
+                        v-if="hasPermission('busi:order:select')" @click="onSubmit">查询</el-button>
+                    <el-button type="warning" :icon="getPermissionIcon('busi:order:reset')"
+                        v-if="hasPermission('busi:order:reset')" @click="resetForm">重置</el-button>
                 </el-form-item>
             </el-form>
             <el-table stripe border :data="tableData" style="width: 100%;margin-bottom: 20px">
-                <el-table-column prop="id" label="序号" width="50">
+                <el-table-column prop="id" label="序号" width="50" fixed>
                     <template slot-scope="scope">
                         {{ scope.$index + 1 + (start - 1) * size }}
                     </template>
                 </el-table-column>
                 <el-table-column prop="autoNum" label="车牌号码" width="100"></el-table-column>
                 <el-table-column prop="customerName" label="客户名称" width="130"></el-table-column>
-                <el-table-column prop="rentalTime" label="出租时间"></el-table-column>
-                <el-table-column prop="returnTime" label="归还时间"></el-table-column>
+                <el-table-column prop="rentalTime" label="出租时间" width="160"></el-table-column>
+                <el-table-column prop="returnTime" label="归还时间" width="160"></el-table-column>
                 <el-table-column prop="typeName" label="出租类型" width="100"></el-table-column>
                 <el-table-column prop="deposit" label="押金" width="100"></el-table-column>
                 <el-table-column prop="mileage" label="起租里程" width="100"></el-table-column>
                 <el-table-column prop="returnMileage" label="还车里程" width="100"></el-table-column>
                 <el-table-column prop="rentPayable" label="应付租金" width="100"></el-table-column>
                 <el-table-column prop="rentActual" label="实付租金" width="100"></el-table-column>
-                <el-table-column label="操作">
+                <el-table-column label="操作" width="200">
                     <template slot-scope="scope">
-                        <el-button type="primary" size="mini" @click="handleDetail(scope.row)">详情</el-button>
-                        <el-button type="danger" v-if="scope.row.depositReturn === 0" size="mini"
+                        <el-button type="primary" size="mini" @click="handleDetail(scope.row)"
+                            :icon="getPermissionIcon('busi:order:info')"
+                            v-if="hasPermission('busi:order:info')">详情</el-button>
+                        <el-button type="danger"
+                            v-if="scope.row.depositReturn === 0 && hasPermission('busi:order:returnDeposit')"
+                            size="mini" :icon="getPermissionIcon('busi:order:returnDeposit')"
                             @click="handleReturnDeposit(scope.row)">返还押金</el-button>
                     </template>
                 </el-table-column>

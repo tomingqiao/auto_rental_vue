@@ -2,42 +2,46 @@
     <div class="app-container">
         <el-main>
             <el-form inline :model="orderModel" size="small" label-width="100px">
-                <el-form-item label="订单编号">
+                <el-form-item label="订单编号:">
                     <el-input v-model="orderModel.orderNum" placeholder="请输入订单编号"></el-input>
                 </el-form-item>
-                <el-form-item label="车牌号码">
+                <el-form-item label="车牌号码:">
                     <el-input v-model="orderModel.autoNum" placeholder="车牌号码"></el-input>
                 </el-form-item>
-                <el-form-item label="客户名称">
+                <el-form-item label="客户名称:">
                     <el-input v-model="orderModel.customerName" placeholder="请输入客户名称"></el-input>
                 </el-form-item>
-                <el-form-item label="客户电话">
+                <el-form-item label="客户电话:">
                     <el-input v-model="orderModel.customerTel" placeholder="请输入客户电话"></el-input>
                 </el-form-item>
-                <el-form-item>
-                    <el-button type="primary" icon="el-icon-search" @click="onSubmit">查询</el-button>
-                    <el-button type="warning" icon="el-icon-refresh" @click="resetForm">重置</el-button>
+                <el-form-item label="操作:">
+                    <el-button type="primary" :icon="getPermissionIcon('busi:rentalReturn:select')"
+                        v-if="hasPermission('busi:rentalReturn:select')" @click="onSubmit">查询</el-button>
+                    <el-button type="warning" :icon="getPermissionIcon('busi:rentalReturn:reset')"
+                        v-if="hasPermission('busi:rentalReturn:reset')" @click="resetForm">重置</el-button>
                 </el-form-item>
             </el-form>
-            <el-table stripe border :data="tableData" style="width: 100%;margin-bottom: 20px">
-                <el-table-column prop="id" label="序号" width="50">
+            <el-table stripe border :data="tableData" style="width: 1295px;margin-bottom: 20px">
+                <el-table-column prop="id" label="序号" width="50" fixed>
                     <template slot-scope="scope">
                         {{ scope.$index + 1 + (start - 1) * size }}
                     </template>
                 </el-table-column>
-                <el-table-column prop="orderNum" label="订单编号"></el-table-column>
-                <el-table-column prop="autoNum" label="车牌号码"></el-table-column>
-                <el-table-column prop="customerName" label="客户名称"></el-table-column>
+                <el-table-column prop="orderNum" label="订单编号" width="200"></el-table-column>
+                <el-table-column prop="autoNum" label="车牌号码" width="100"></el-table-column>
+                <el-table-column prop="customerName" label="客户名称" width="100"></el-table-column>
                 <el-table-column prop="customerTel" label="客户电话" width="110"></el-table-column>
-                <el-table-column prop="rentalTime" label="出租时间"></el-table-column>
+                <el-table-column prop="rentalTime" label="出租时间" width="160"></el-table-column>
                 <el-table-column prop="typeName" label="出租类型" width="100"></el-table-column>
                 <el-table-column prop="typeDiscount" label="折扣" width="70"></el-table-column>
                 <el-table-column prop="rent" label="日租金额" width="100"></el-table-column>
                 <el-table-column prop="deposit" label="押金" width="100"></el-table-column>
-                <el-table-column prop="mileage" label="起租里程"></el-table-column>
+                <el-table-column prop="mileage" label="起租里程" width="100"></el-table-column>
                 <el-table-column label="操作" width="100">
                     <template slot-scope="scope">
-                        <el-button type="primary" size="mini" @click="handleReturn(scope.row)">还车</el-button>
+                        <el-button type="primary" size="mini" @click="handleReturn(scope.row)"
+                            :icon="getPermissionIcon('busi:rentalReturn:return')"
+                            v-if="hasPermission('busi:rentalReturn:return')">还车</el-button>
                     </template>
                 </el-table-column>
             </el-table>

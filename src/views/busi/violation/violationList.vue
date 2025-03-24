@@ -2,53 +2,57 @@
     <div>
         <el-main>
             <el-form inline size="small" label-width="100px" :model="violationModel">
-                <el-form-item label="车牌号">
+                <el-form-item label="车牌号:">
                     <el-input v-model="violationModel.autoNum" placeholder="请输入车牌号"></el-input>
                 </el-form-item>
-                <el-form-item label="违章事由">
+                <el-form-item label="违章事由:">
                     <el-input v-model="violationModel.reason" placeholder="请输入违章事由"></el-input>
                 </el-form-item>
-                <el-form-item label="违章地点">
+                <el-form-item label="违章地点:">
                     <el-input v-model="violationModel.location" placeholder="请输入违章地点"></el-input>
                 </el-form-item>
-                <el-form-item label="是否处理">
+                <el-form-item label="是否处理:">
                     <el-select v-model="violationModel.status" placeholder="请选择是否处理">
                         <el-option label="已处理" value="1"></el-option>
                         <el-option label="未处理" value="0"></el-option>
                     </el-select>
                 </el-form-item>
-                <el-form-item label="违章时间">
+                <el-form-item label="违章时间:">
                     <el-date-picker v-model="violationModel.violationTimeVal" type="datetimerange" align="right"
                         unlink-panels range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期"
                         :picker-options="pickerOptions" value-format="yyyy-MM-dd HH:mm:ss">
                     </el-date-picker>
                 </el-form-item>
-                <el-form-item label="罚款">
+                <el-form-item label="罚款:">
                     <el-input-number :min="0" v-model="violationModel.lowFine" placeholder="请输入最低罚款"></el-input-number>
                     <el-input-number :min="0" v-model="violationModel.highFine" placeholder="请输入最高罚款"></el-input-number>
                 </el-form-item>
-                <el-form-item>
-                    <el-button type="primary" @click="onSubmit()" icon="el-icon-search">查询</el-button>
-                    <el-button type="warning" @click="resetForm()" icon="el-icon-refresh">重置</el-button>
-                    <el-button type="success" @click="handleCreate()" icon="el-icon-plus">新增</el-button>
-                    <el-button type="danger" @click="deleteBatch()" icon="el-icon-delete">批量删除</el-button>
+                <el-form-item label="操作:">
+                    <el-button type="primary" @click="onSubmit()" :icon="getPermissionIcon('busi:violation:select')"
+                        v-if="hasPermission('busi:violation:select')">查询</el-button>
+                    <el-button type="warning" @click="resetForm()" :icon="getPermissionIcon('busi:violation:reset')"
+                        v-if="hasPermission('busi:violation:reset')">重置</el-button>
+                    <el-button type="success" @click="handleCreate()" :icon="getPermissionIcon('busi:violation:add')"
+                        v-if="hasPermission('busi:violation:add')">新增</el-button>
+                    <el-button type="danger" @click="deleteBatch()" :icon="getPermissionIcon('busi:violation:delete')"
+                        v-if="hasPermission('busi:violation:delete')">批量删除</el-button>
                 </el-form-item>
             </el-form>
-            <el-table :data="tableData" style="width: 100%;margin-bottom: 20px" border stripe
+            <el-table :data="tableData" style="width: 1245px;margin-bottom: 20px" border stripe
                 @selection-change="handelSelectChange">
-                <el-table-column type="selection" width="55"></el-table-column>
-                <el-table-column label="序号" width="88">
+                <el-table-column type="selection" width="55" fixed></el-table-column>
+                <el-table-column label="序号" width="55" fixed>
                     <template slot-scope="scope">
                         {{ scope.$index + 1 + (start - 1) * size }}
                     </template>
                 </el-table-column>
-                <el-table-column prop="autoNum" label="车牌号"></el-table-column>
-                <el-table-column prop="reason" label="违章事由"></el-table-column>
-                <el-table-column prop="location" label="违章地点"></el-table-column>
-                <el-table-column prop="violationTime" label="违章时间"></el-table-column>
-                <el-table-column prop="deductPoints" label="扣分"></el-table-column>
-                <el-table-column prop="fine" label="罚款"></el-table-column>
-                <el-table-column prop="status" label="是否处理">
+                <el-table-column prop="autoNum" label="车牌号" width="100"></el-table-column>
+                <el-table-column prop="reason" label="违章事由" width="200"></el-table-column>
+                <el-table-column prop="location" label="违章地点" width="200"></el-table-column>
+                <el-table-column prop="violationTime" label="违章时间" width="160"></el-table-column>
+                <el-table-column prop="deductPoints" label="扣分" width="70"></el-table-column>
+                <el-table-column prop="fine" label="罚款" width="100"></el-table-column>
+                <el-table-column prop="status" label="是否处理" width="100">
                     <template slot-scope="scope">
                         <el-tag v-if="scope.row.status == 1" type="success">已处理</el-tag>
                         <el-tag v-else type="danger">未处理</el-tag>
@@ -56,8 +60,12 @@
                 </el-table-column>
                 <el-table-column label="操作" width="200">
                     <template slot-scope="scope">
-                        <el-button type="primary" size="mini" @click="handleEdit(scope.row)">编辑</el-button>
-                        <el-button type="danger" size="mini" @click="handleDelete(scope.row)">删除</el-button>
+                        <el-button type="primary" @click="handleEdit(scope.row)"
+                            :icon="getPermissionIcon('busi:violation:edit')"
+                            v-if="hasPermission('busi:violation:edit')">编辑</el-button>
+                        <el-button type="danger" @click="handleDelete(scope.row)"
+                            :icon="getPermissionIcon('busi:violation:delete')"
+                            v-if="hasPermission('busi:violation:delete')">删除</el-button>
                     </template>
                 </el-table-column>
             </el-table>

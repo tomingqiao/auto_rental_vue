@@ -6,7 +6,7 @@
 
         </el-aside>
         <el-main>
-            <el-form :model="userModel" :rules="rules" label-width="100px" :inline="true" size="small">
+            <el-form :model="userModel" :rules="rules" label-width="80px" :inline="true" size="small">
                 <el-form-item label="用户账号:">
                     <el-input v-model="userModel.username" placeholder="请输入用户账号"></el-input>
                 </el-form-item>
@@ -22,47 +22,53 @@
                 <el-form-item label="邮箱:">
                     <el-input v-model="userModel.email" placeholder="请输入邮箱"></el-input>
                 </el-form-item>
-                <el-form-item>
-                    <el-button type="primary" icon="el-icon-search" @click="onSubmit">查询</el-button>
-                    <el-button type="warning" icon="el-icon-refresh" @click="resetForm">重置</el-button>
-                    <el-button type="success" icon="el-icon-plus" @click="handleCreate"
+                <el-form-item label="操作:">
+                    <el-button type="primary" :icon="getPermissionIcon('sys:user:select')" @click="onSubmit"
+                        v-if="hasPermission('sys:user:select')">查询</el-button>
+                    <el-button type="warning" :icon="getPermissionIcon('sys:user:reset')" @click="resetForm"
+                        v-if="hasPermission('sys:user:reset')">重置</el-button>
+                    <el-button type="success" :icon="getPermissionIcon('sys:user:add')" @click="handleCreate"
                         v-if="hasPermission('sys:user:add')">新增</el-button>
-                    <el-button type="danger" icon="el-icon-delete" @click="deleteBatch">删除选中</el-button>
+                    <el-button type="danger" :icon="getPermissionIcon('sys:user:delete')" @click="deleteBatch"
+                        v-if="hasPermission('sys:user:delete')">删除选中</el-button>
                 </el-form-item>
             </el-form>
             <el-table :data="tableData" style="width: 100%;margin-bottom: 20px" border stripe
                 @selection-change="handleSelectionChange">
-                <el-table-column type="selection" width="55"></el-table-column>
-                <el-table-column label="序号" width="66">
+                <el-table-column type="selection" width="55" fixed></el-table-column>
+                <el-table-column label="序号" width="66" fixed>
                     <template slot-scope="scope">
                         {{ (start - 1) * size + scope.$index + 1 }}
                     </template>
                 </el-table-column>
-                <el-table-column prop="username" label="用户账号"></el-table-column>
-                <el-table-column prop="realname" label="真实姓名"></el-table-column>
-                <el-table-column prop="nickname" label="用户昵称"></el-table-column>
-                <el-table-column prop="email" label="邮箱"></el-table-column>
-                <el-table-column prop="phone" label="手机号"></el-table-column>
+                <el-table-column prop="username" label="用户账号" width="150"></el-table-column>
+                <el-table-column prop="realname" label="真实姓名" width="150"></el-table-column>
+                <el-table-column prop="nickname" label="用户昵称" width="150"></el-table-column>
+                <el-table-column prop="email" label="邮箱" width="180"></el-table-column>
+                <el-table-column prop="phone" label="手机号" width="180"></el-table-column>
                 <el-table-column prop="gender" label="性别">
                     <template slot-scope="scope">
                         <el-tag type="danger" v-if="scope.row.gender === 1">男</el-tag>
                         <el-tag type="success" v-else>女</el-tag>
                     </template>
                 </el-table-column>
-                <el-table-column prop="deptName" label="所在部门"></el-table-column>
+                <el-table-column prop="deptName" label="所在部门" width="200"></el-table-column>
                 <el-table-column prop="avatar" label="头像">
                     <template slot-scope="scope">
                         <img :src="scope.row.avatar" alt="" style="width: 40px;height: 40px;border-radius: 50%;">
                     </template>
                 </el-table-column>
-                <el-table-column label="操作" width="300">
+                <el-table-column label="操作" width="300" fixed="right">
                     <template slot-scope="scope">
                         <el-button type="primary" size="small" @click="handleEdit(scope.row)"
-                            icon="el-icon-edit">编辑</el-button>
+                            :icon="getPermissionIcon('sys:user:edit')"
+                            v-if="hasPermission('sys:user:edit')">编辑</el-button>
                         <el-button type="danger" size="small" @click="handleDelete(scope.row)"
-                            icon="el-icon-delete">删除</el-button>
+                            :icon="getPermissionIcon('sys:user:delete')"
+                            v-if="hasPermission('sys:user:delete')">删除</el-button>
                         <el-button type="warning" size="small" @click="handleRole(scope.row)"
-                            icon="el-icon-setting">绑定角色</el-button>
+                            :icon="getPermissionIcon('sys:user:bindRole')"
+                            v-if="hasPermission('sys:user:bindRole')">绑定角色</el-button>
                     </template>
                 </el-table-column>
             </el-table>
@@ -138,6 +144,7 @@
 import userApi from '@/api/auth_user'
 import deptApi from '@/api/dept'
 import roleApi from '@/api/auth_role'
+import getPermissionIcon from '@/api/icon'
 export default {
     data() {
         return {

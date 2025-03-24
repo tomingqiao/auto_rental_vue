@@ -3,16 +3,17 @@
         <el-main>
             <!--查询表单-->
             <el-form :inline="true" size="small" label-width="100px">
-                <el-form-item>
-                    <el-button type="success" icon="el-icon-plus" @click="handleCreate">新增</el-button>
+                <el-form-item label="操作:">
+                    <el-button type="success" :icon="getPermissionIcon('sys:permission:add')"
+                        v-if="hasPermission('sys:permission:add')" @click="handleCreate">新增</el-button>
                 </el-form-item>
             </el-form>
             <!--表单结束-->
             <!--数据表格-->
-            <el-table :data="tableData" style="width: 100%;margin-bottom: 20px" border stripe
+            <el-table :data="tableData" style="width: 1285px;margin-bottom: 20px" border stripe
                 :tree-props="{ children: 'children', hasChildren: 'hasChildren' }" default-expand-all row-key="id"
                 :height="height">
-                <el-table-column prop="permissionLabel" label="菜单名称">
+                <el-table-column prop="permissionLabel" label="菜单名称" fixed width="150">
                 </el-table-column>
                 <!-- <el-table-column prop="parentLabel" label="上级菜单名称">
                 </el-table-column> -->
@@ -23,13 +24,13 @@
                         <el-tag v-else-if="scope.row.permissionType === 2" type="danger">按钮</el-tag>
                     </template>
                 </el-table-column>
-                <el-table-column prop="permissionCode" label="权限标识">
+                <el-table-column prop="permissionCode" label="权限标识" width="200">
                 </el-table-column>
                 <el-table-column prop="routePath" label="路由地址" width="150">
                 </el-table-column>
                 <el-table-column prop="routeName" label="路由名称" width="150">
                 </el-table-column>
-                <el-table-column prop="routeUrl" label="组件路径">
+                <el-table-column prop="routeUrl" label="组件路径" width="250">
                 </el-table-column>
                 <el-table-column prop="icon" label="菜单图标" width="100">
                     <template slot-scope="scope">
@@ -39,9 +40,10 @@
                 </el-table-column>
                 <el-table-column label="操作" width="180px">
                     <template slot-scope="scope">
-                        <el-button type="primary" icon="el-icon-edit" size="mini"
-                            @click="handleEdit(scope.row)">编辑</el-button>
-                        <el-button type="danger" icon="el-icon-delete" size="mini"
+                        <el-button type="primary" :icon="getPermissionIcon('sys:permission:edit')" size="mini"
+                            v-if="hasPermission('sys:permission:edit')" @click="handleEdit(scope.row)">编辑</el-button>
+                        <el-button type="danger" :icon="getPermissionIcon('sys:permission:delete')" size="mini"
+                            v-if="hasPermission('sys:permission:delete')"
                             @click="handleDelete(scope.row)">删除</el-button>
                     </template>
                 </el-table-column>
@@ -175,12 +177,36 @@ export default {
                     value: 'el-icon-search',
                 },
                 {
+                    label: '导出',
+                    value: 'el-icon-upload',
+                },
+                {
                     label: '根目录',
                     value: 'component',
                 },
                 {
                     label: '子目录',
                     value: 'guide'
+                },
+                {
+                    label: '设置',
+                    value: 'el-icon-setting'
+                },
+                {
+                    label: '出租',
+                    value: 'el-icon-sold-out'
+                },
+                {
+                    label: '还车',
+                    value: 'el-icon-goods'
+                },
+                {
+                    label: '详情',
+                    value: 'el-icon-info'
+                },
+                {
+                    label: '归还押金',
+                    value: 'el-icon-sell'
                 },
             ]
         }
@@ -296,7 +322,7 @@ export default {
         },
         isValidElIcon(str) {
             if (str != '') {
-                if (str.indexOf('el-icon') != -1) {
+                if (str.includes('el-icon')) {
                     return true
                 }
             }

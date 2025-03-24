@@ -3,43 +3,48 @@
         <el-main>
             <!--查询表单-->
             <el-form :inline="true" :model="brandModel" size="small" label-width="100px">
-                <el-form-item label="汽车厂商名称">
+                <el-form-item label="汽车厂商名称:">
                     <el-select v-model="brandModel.mid" placeholder="请选择汽车厂商名称">
                         <el-option v-for="item in makerList" :key="item.id" :label="item.name"
                             :value="item.id"></el-option>
                     </el-select>
                 </el-form-item>
-                <el-form-item label="汽车品牌名称">
+                <el-form-item label="汽车品牌名称:">
                     <el-input v-model="brandModel.brandName" placeholder="请输入汽车品牌名称"></el-input>
                 </el-form-item>
-                <el-form-item>
-                    <el-button type="primary" icon="el-icon-search" @click="onSubmit">查询</el-button>
-                    <el-button type="warning" icon="el-icon-refresh" @click="resetForm">重置</el-button>
-                    <el-button type="success" icon="el-icon-plus" @click="handleCreate">新增</el-button>
-                    <el-button type="danger" icon="el-icon-delete" @click="deleteBatch">删除选中</el-button>
-                    <el-button type="primary" icon="el-icon-download" @click="exportExcel">导出Excel</el-button>
+                <el-form-item label="操作:">
+                    <el-button type="primary" :icon="getPermissionIcon('auto:brand:select')"
+                        v-if="hasPermission('auto:brand:select')" @click="onSubmit">查询</el-button>
+                    <el-button type="warning" :icon="getPermissionIcon('auto:brand:reset')"
+                        v-if="hasPermission('auto:brand:reset')" @click="resetForm">重置</el-button>
+                    <el-button type="success" :icon="getPermissionIcon('auto:brand:add')"
+                        v-if="hasPermission('auto:brand:add')" @click="handleCreate">新增</el-button>
+                    <el-button type="danger" :icon="getPermissionIcon('auto:brand:delete')"
+                        v-if="hasPermission('auto:brand:delete')" @click="deleteBatch">删除选中</el-button>
+                    <el-button type="primary" :icon="getPermissionIcon('auto:brand:export')"
+                        v-if="hasPermission('auto:brand:export')" @click="exportExcel">导出Excel</el-button>
                 </el-form-item>
             </el-form>
             <!--表单结束-->
             <!--数据表格-->
-            <el-table :data="tableData" style="width: 100%;margin-bottom: 20px" border stripe
+            <el-table :data="tableData" style="width: 715px;margin-bottom: 20px" border stripe
                 @selection-change="handelSelectChange">
                 <el-table-column type="selection" width="55"> </el-table-column>
-                <el-table-column label="序号" width="88">
+                <el-table-column label="序号" width="55">
                     <template slot-scope="scope">
                         {{ (start - 1) * size + scope.$index + 1 }}
                     </template>
                 </el-table-column>
-                <el-table-column prop="brandName" label="汽车品牌名称">
+                <el-table-column prop="brandName" label="汽车品牌名称" width="200">
                 </el-table-column>
-                <el-table-column prop="makerName" label="汽车厂商名称">
+                <el-table-column prop="makerName" label="汽车厂商名称" width="200">
                 </el-table-column>
-                <el-table-column label="操作">
+                <el-table-column label="操作" width="200">
                     <template slot-scope="scope">
-                        <el-button type="primary" icon="el-icon-edit" size="mini"
-                            @click="handleEdit(scope.row)">编辑</el-button>
-                        <el-button type="danger" icon="el-icon-delete" size="mini"
-                            @click="handleDelete(scope.row)">删除</el-button>
+                        <el-button type="primary" :icon="getPermissionIcon('auto:brand:edit')" size="mini"
+                            v-if="hasPermission('auto:brand:edit')" @click="handleEdit(scope.row)">编辑</el-button>
+                        <el-button type="danger" :icon="getPermissionIcon('auto:brand:delete')" size="mini"
+                            v-if="hasPermission('auto:brand:delete')" @click="handleDelete(scope.row)">删除</el-button>
                     </template>
                 </el-table-column>
             </el-table>

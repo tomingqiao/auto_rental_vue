@@ -3,33 +3,36 @@
         <el-main>
             <!--查询表单-->
             <el-form :inline="true" :model="deptModel" size="small" label-width="100px">
-                <el-form-item label="部门名称">
+                <el-form-item label="部门名称:">
                     <el-input v-model="deptModel.deptName" placeholder="请输入部门名称"></el-input>
                 </el-form-item>
-                <el-form-item>
-                    <el-button type="primary" icon="el-icon-search" @click="onSubmit">查询</el-button>
-                    <el-button type="warning" icon="el-icon-refresh" @click="resetForm">重置</el-button>
-                    <el-button type="success" icon="el-icon-plus" @click="handleCreate">新增</el-button>
+                <el-form-item label="操作:">
+                    <el-button type="primary" :icon="getPermissionIcon('sys:dept:select')"
+                        v-if="hasPermission('sys:dept:select')" @click="onSubmit">查询</el-button>
+                    <el-button type="warning" :icon="getPermissionIcon('sys:dept:reset')"
+                        v-if="hasPermission('sys:dept:reset')" @click="resetForm">重置</el-button>
+                    <el-button type="success" :icon="getPermissionIcon('sys:dept:add')"
+                        v-if="hasPermission('sys:dept:add')" @click="handleCreate">新增</el-button>
                 </el-form-item>
             </el-form>
             <!--表单结束-->
             <!--数据表格-->
-            <el-table :data="tableData" style="width: 100%;margin-bottom: 20px" border stripe
+            <el-table :data="tableData" style="width:1105px;margin-bottom: 20px" border stripe
                 :tree-props="{ children: 'children', hasChildren: 'hasChildren' }" default-expand-all row-key="id">
-                <el-table-column prop="deptName" label="部门名称">
+                <el-table-column prop="deptName" label="部门名称" width="200" fixed>
                 </el-table-column>
-                <el-table-column prop="parentName" label="上级部门名称">
+                <el-table-column prop="parentName" label="上级部门名称" width="200">
                 </el-table-column>
-                <el-table-column prop="phone" label="部门电话">
+                <el-table-column prop="phone" label="部门电话" width="200">
                 </el-table-column>
-                <el-table-column prop="address" label="部门地址">
+                <el-table-column prop="address" label="部门地址" width="300">
                 </el-table-column>
-                <el-table-column label="操作">
+                <el-table-column label="操作" width="200">
                     <template slot-scope="scope">
-                        <el-button type="primary" icon="el-icon-edit" size="mini"
-                            @click="handleEdit(scope.row)">编辑</el-button>
-                        <el-button type="danger" icon="el-icon-delete" size="mini"
-                            @click="handleDelete(scope.row)">删除</el-button>
+                        <el-button type="primary" :icon="getPermissionIcon('sys:dept:edit')" size="mini"
+                            v-if="hasPermission('sys:dept:edit')" @click="handleEdit(scope.row)">编辑</el-button>
+                        <el-button type="danger" :icon="getPermissionIcon('sys:dept:delete')" size="mini"
+                            v-if="hasPermission('sys:dept:delete')" @click="handleDelete(scope.row)">删除</el-button>
                     </template>
                 </el-table-column>
             </el-table>

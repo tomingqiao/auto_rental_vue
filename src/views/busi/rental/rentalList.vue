@@ -2,81 +2,83 @@
     <div>
         <el-main>
             <el-form inline :model="autoInfoModel" size="small" label-width="100px">
-                <el-form-item label="厂商名称">
+                <el-form-item label="厂商名称:">
                     <el-select v-model="autoInfoModel.makerId" placeholder="请选择厂商名称"
                         @change="handleMakerChange(autoInfoModel.makerId)">
                         <el-option v-for="item in makerList" :key="item.id" :label="item.name" :value="item.id">
                         </el-option>
                     </el-select>
                 </el-form-item>
-                <el-form-item label="品牌名称" v-if="autoInfoModel.makerId">
+                <el-form-item label="品牌名称:" v-if="autoInfoModel.makerId">
                     <el-select v-model="autoInfoModel.brandId" placeholder="请选择品牌名称">
                         <el-option v-for="item in brandList" :key="item.id" :label="item.brandName" :value="item.id">
                         </el-option>
                     </el-select>
                 </el-form-item>
-                <el-form-item label="车牌号码">
+                <el-form-item label="车牌号码:">
                     <el-input v-model="autoInfoModel.autoNum" placeholder="请输入车牌号码"></el-input>
                 </el-form-item>
-                <el-form-item label="车辆类型">
+                <el-form-item label="车辆类型:">
                     <el-select v-model="autoInfoModel.infoType" placeholder="请选择车辆类型">
                         <el-option v-for="item in autoTypeList" :key="item.id" :label="item.name" :value="item.id">
                         </el-option>
                     </el-select>
                 </el-form-item>
-                <el-form-item label="租金">
+                <el-form-item label="租金:">
                     <el-input-number v-model="autoInfoModel.lowRent" :min="0" placeholder="最低租金"></el-input-number>
                     <el-input-number v-model="autoInfoModel.highRent" :min="0" placeholder="最高租金"></el-input-number>
                 </el-form-item>
-                <el-form-item label="上牌日期">
+                <el-form-item label="上牌日期:">
                     <el-date-picker v-model="autoInfoModel.registrationDateVal" type="daterange" align="right"
                         unlink-panels range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期"
                         :picker-options="pickerOptions" value-format="yyyy-MM-dd">
                     </el-date-picker>
                 </el-form-item>
-                <el-form-item>
-                    <el-button type="primary" icon="el-icon-search" size="small" @click="onSubmit">查询</el-button>
-                    <el-button type="warning" icon="el-icon-refresh" size="small" @click="resetForm">重置</el-button>
+                <el-form-item label="操作:">
+                    <el-button type="primary" :icon="getPermissionIcon('busi:rental:select')" size="small"
+                        v-if="hasPermission('busi:rental:select')" @click="onSubmit">查询</el-button>
+                    <el-button type="warning" :icon="getPermissionIcon('busi:rental:reset')" size="small"
+                        @click="resetForm" v-if="hasPermission('busi:rental:reset')">重置</el-button>
                 </el-form-item>
             </el-form>
-            <el-table :data="autoInfoList" stripe border style="width: 100%;margin-bottom: 20px">
-                <el-table-column prop="id" label="序号" width="50">
+            <el-table :data="autoInfoList" stripe border style="width: 1195px;margin-bottom: 20px">
+                <el-table-column prop="id" label="序号" width="50" fixed>
                     <template slot-scope="scope">
                         {{ scope.$index + 1 + (start - 1) * size }}
                     </template>
                 </el-table-column>
-                <el-table-column prop="autoNum" label="车牌号码"></el-table-column>
-                <el-table-column prop="makerName" label="厂商名称"></el-table-column>
-                <el-table-column prop="brandName" label="品牌名称"></el-table-column>
-                <el-table-column prop="infoType" label="车辆类型">
+                <el-table-column prop="autoNum" label="车牌号码" width="100"></el-table-column>
+                <el-table-column prop="makerName" label="厂商名称" width="100"></el-table-column>
+                <el-table-column prop="brandName" label="品牌名称" width="100"></el-table-column>
+                <el-table-column prop="infoType" label="车辆类型" width="100">
                     <template slot-scope="scope">
                         <el-tag v-for="item in autoTypeList" :key="item.id" v-if="scope.row.infoType == item.id">{{
                             item.name }}</el-tag>
                     </template>
                 </el-table-column>
-                <el-table-column prop="registrationDate" label="上牌日期"></el-table-column>
-                <el-table-column prop="color" label="颜色">
+                <el-table-column prop="registrationDate" label="上牌日期" width="120"></el-table-column>
+                <el-table-column prop="color" label="颜色" width="60">
                     <template slot-scope="scope">
                         <el-color-picker v-model="scope.row.color" disabled></el-color-picker>
                     </template>
                 </el-table-column>
-                <el-table-column prop="displacement" label="排量">
+                <el-table-column prop="displacement" label="排量" width="60">
                     <template slot-scope="scope">
                         {{ scope.row.displacement }}{{ scope.row.unit }}
                     </template>
                 </el-table-column>
-                <el-table-column prop="mileage" label="行驶里程"> </el-table-column>
-                <el-table-column prop="rent" label="租金"></el-table-column>
-                <el-table-column prop="deposit" label="押金"></el-table-column>
-                <el-table-column prop="pic" label="车辆图片">
+                <el-table-column prop="mileage" label="行驶里程" width="100"> </el-table-column>
+                <el-table-column prop="rent" label="租金" width="100"></el-table-column>
+                <el-table-column prop="deposit" label="押金" width="100"></el-table-column>
+                <el-table-column prop="pic" label="车辆图片" width="100">
                     <template slot-scope="scope">
                         <el-image :src="scope.row.pic" style="width: 70px; height: 50px"></el-image>
                     </template>
                 </el-table-column>
                 <el-table-column label="操作" width="100">
                     <template slot-scope="scope">
-                        <el-button type="primary" icon="el-icon-bangzhu" size="small"
-                            @click="handleRental(scope.row)">出租</el-button>
+                        <el-button type="primary" :icon="getPermissionIcon('busi:rental:rental')" size="small"
+                            v-if="hasPermission('busi:rental:rental')" @click="handleRental(scope.row)">出租</el-button>
                     </template>
                 </el-table-column>
             </el-table>

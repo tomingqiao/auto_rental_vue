@@ -3,36 +3,43 @@
         <el-main>
             <!--查询表单-->
             <el-form :inline="true" :model="roleModel" size="small" label-width="100px">
-                <el-form-item label="角色名称">
+                <el-form-item label="角色名称:">
                     <el-input v-model="roleModel.roleName" placeholder="请输入角色名称"></el-input>
                 </el-form-item>
-                <el-form-item>
-                    <el-button type="primary" icon="el-icon-search" @click="onSubmit">查询</el-button>
-                    <el-button type="warning" icon="el-icon-refresh" @click="resetForm">重置</el-button>
-                    <el-button type="success" icon="el-icon-plus" @click="handleCreate">新增</el-button>
-                    <el-button type="danger" icon="el-icon-delete" @click="deleteBatch">删除选中</el-button>
+                <el-form-item label="操作:">
+                    <el-button type="primary" :icon="getPermissionIcon('sys:role:select')"
+                        v-if="hasPermission('sys:role:select')" @click="onSubmit">查询</el-button>
+                    <el-button type="warning" :icon="getPermissionIcon('sys:role:reset')" @click="resetForm"
+                        v-if="hasPermission('sys:role:reset')">重置</el-button>
+                    <el-button type="success" :icon="getPermissionIcon('sys:role:add')" @click="handleCreate"
+                        v-if="hasPermission('sys:role:add')">新增</el-button>
+                    <el-button type="danger" :icon="getPermissionIcon('sys:role:delete')" @click="deleteBatch"
+                        v-if="hasPermission('sys:role:delete')">删除选中</el-button>
                 </el-form-item>
             </el-form>
             <!--表单结束-->
             <el-table :data="roleList" border @selection-change="handleSelectionChange" stripe
-                style="width: 100%;margin-bottom: 20px">
-                <el-table-column type="selection" width="55"></el-table-column>
-                <el-table-column label="序号" width="88">
+                style="width: 1015px;margin-bottom: 20px">
+                <el-table-column type="selection" width="55" fixed></el-table-column>
+                <el-table-column label="序号" width="55" fixed>
                     <template slot-scope="scope">
                         {{ (start - 1) * size + scope.$index + 1 }}
                     </template>
                 </el-table-column>
-                <el-table-column prop="roleName" label="角色名称"></el-table-column>
-                <el-table-column prop="roleCode" label="角色编码"></el-table-column>
-                <el-table-column prop="remark" label="角色描述"></el-table-column>
-                <el-table-column label="操作">
+                <el-table-column prop="roleName" label="角色名称" width="150"></el-table-column>
+                <el-table-column prop="roleCode" label="角色编码" width="150"></el-table-column>
+                <el-table-column prop="remark" label="角色描述" width="300"></el-table-column>
+                <el-table-column label="操作" width="300">
                     <template slot-scope="scope">
                         <el-button type="primary" size="mini" @click="handleEdit(scope.row)"
-                            icon="el-icon-edit">编辑</el-button>
+                            :icon="getPermissionIcon('sys:role:edit')"
+                            v-if="hasPermission('sys:role:edit')">编辑</el-button>
                         <el-button type="danger" size="mini" @click="handleDelete(scope.row)"
-                            icon="el-icon-delete">删除</el-button>
+                            v-if="hasPermission('sys:role:delete')"
+                            :icon="getPermissionIcon('sys:role:delete')">删除</el-button>
                         <el-button type="warning" size="mini" @click="handlePermission(scope.row)"
-                            icon="el-icon-setting">分配权限</el-button>
+                            v-if="hasPermission('sys:role:assignPermissions')"
+                            :icon="getPermissionIcon('sys:role:assignPermissions')">分配权限</el-button>
                     </template>
                 </el-table-column>
             </el-table>
@@ -58,10 +65,13 @@
                 </div>
             </el-dialog>
             <el-dialog :title="title" :visible.sync="dialogPermissionVisible">
-                <el-tree ref="tree" :data="treeData" :props="defaultProps" node-key="id" show-checkbox
-                    default-expand-all :default-checked-keys="chenckedKeys" check-strictly
-                    :expand-on-click-node="false">
-                </el-tree>
+                <el-main style="height: 500px;">
+                    <el-tree ref="tree" :data="treeData" :props="defaultProps" node-key="id" show-checkbox
+                        default-expand-all :default-checked-keys="chenckedKeys" check-strictly
+                        :expand-on-click-node="false">
+                    </el-tree>
+                </el-main>
+
                 <div slot="footer" class="dialog-footer">
                     <el-button @click="clearSelect">取 消</el-button>
                     <el-button type="primary" @click="handlePermissionSave">确 定</el-button>

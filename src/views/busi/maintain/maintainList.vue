@@ -2,50 +2,56 @@
     <div>
         <el-main>
             <el-form :model="maintainModel" label-width="100px" inline size="small">
-                <el-form-item label="车牌号码">
+                <el-form-item label="车牌号码:">
                     <el-input v-model="maintainModel.autoNum" placeholder="请输入车牌号码"></el-input>
                 </el-form-item>
-                <el-form-item label="维保项目">
+                <el-form-item label="维保项目:">
                     <el-input v-model="maintainModel.item" placeholder="请输入维保项目"></el-input>
                 </el-form-item>
-                <el-form-item label="维保地点">
+                <el-form-item label="维保地点:">
                     <el-input v-model="maintainModel.location" placeholder="请输入维保地点"></el-input>
                 </el-form-item>
-                <el-form-item label="维保日期">
+                <el-form-item label="维保日期:">
                     <el-date-picker v-model="maintainModel.maintainTimeVal" type="datetimerange" range-separator="至"
                         start-placeholder="开始日期" end-placeholder="结束日期" value-format="yyyy-MM-dd HH:mm:ss" align="right"
                         :picker-options="pickerOptions">
                     </el-date-picker>
                 </el-form-item>
-                <el-form-item label="维保费用">
+                <el-form-item label="维保费用:">
                     <el-input-number :min="0" v-model="maintainModel.lowCost" placeholder="请输入最低维保费用"></el-input-number>
                     <el-input-number :min="0" v-model="maintainModel.highCost"
                         placeholder="请输入最高维保费用"></el-input-number>
                 </el-form-item>
-                <el-form-item>
-                    <el-button type="primary" @click="onSubmit" icon="el-icon-search">查询</el-button>
-                    <el-button type="warning" @click="resetForm" icon="el-icon-refresh">重置</el-button>
-                    <el-button type="success" @click="handleCreate" icon="el-icon-plus">新增</el-button>
-                    <el-button type="danger" @click="deleteBatch" icon="el-icon-delete">批量删除</el-button>
+                <el-form-item label="操作:">
+                    <el-button type="primary" @click="onSubmit" :icon="getPermissionIcon('busi:maintain:select')"
+                        v-if="hasPermission('busi:maintain:select')">查询</el-button>
+                    <el-button type="warning" @click="resetForm" :icon="getPermissionIcon('busi:maintain:reset')"
+                        v-if="hasPermission('busi:maintain:reset')">重置</el-button>
+                    <el-button type="success" @click="handleCreate" :icon="getPermissionIcon('busi:maintain:add')"
+                        v-if="hasPermission('busi:maintain:add')">新增</el-button>
+                    <el-button type="danger" @click="deleteBatch" :icon="getPermissionIcon('busi:maintain:delete')"
+                        v-if="hasPermission('busi:maintain:delete')">批量删除</el-button>
                 </el-form-item>
             </el-form>
-            <el-table :data="tableData" style="width: 100%;margin-bottom: 20px" border stripe
+            <el-table :data="tableData" style="width: 1165px;margin-bottom: 20px" border stripe
                 @selection-change="handelSelectChange">
-                <el-table-column type="selection" width="55"></el-table-column>
-                <el-table-column label="序号" width="88">
+                <el-table-column type="selection" width="55" fixed></el-table-column>
+                <el-table-column label="序号" width="55" fixed>
                     <template slot-scope="scope">
                         {{ scope.$index + 1 + (start - 1) * size }}
                     </template>
                 </el-table-column>
-                <el-table-column prop="autoNum" label="车牌号码"></el-table-column>
-                <el-table-column prop="item" label="维保项目"></el-table-column>
-                <el-table-column prop="location" label="维保地点"></el-table-column>
-                <el-table-column prop="maintainTime" label="维保日期"></el-table-column>
-                <el-table-column prop="cost" label="维保费用"></el-table-column>
-                <el-table-column label="操作">
+                <el-table-column prop="autoNum" label="车牌号码" width="100"></el-table-column>
+                <el-table-column prop="item" label="维保项目" width="200"></el-table-column>
+                <el-table-column prop="location" label="维保地点" width="200"></el-table-column>
+                <el-table-column prop="maintainTime" label="维保日期" width="200"></el-table-column>
+                <el-table-column prop="cost" label="维保费用" width="100"></el-table-column>
+                <el-table-column label="操作" width="250">
                     <template slot-scope="scope">
-                        <el-button type="primary" icon="el-icon-edit" @click="handleEdit(scope.row)">编辑</el-button>
-                        <el-button type="danger" icon="el-icon-delete" @click="handleDelete(scope.row)">删除</el-button>
+                        <el-button type="primary" :icon="getPermissionIcon('busi:maintain:edit')"
+                            @click="handleEdit(scope.row)" v-if="hasPermission('busi:maintain:edit')">编辑</el-button>
+                        <el-button type="danger" :icon="getPermissionIcon('busi:maintain:delete')"
+                            @click="handleDelete(scope.row)" v-if="hasPermission('busi:maintain:delete')">删除</el-button>
                     </template>
                 </el-table-column>
             </el-table>
@@ -61,7 +67,7 @@
                                 <span style="float: left">{{ item.autoNum }}</span>
                                 <span style="float: right; color: #8492a6; font-size: 13px">未保次数：{{ item.expectedNum
                                     - item.actualNum
-                                }}</span>
+                                    }}</span>
                             </el-option>
                         </el-select>
                     </el-form-item>

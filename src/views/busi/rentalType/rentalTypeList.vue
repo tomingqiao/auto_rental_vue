@@ -1,40 +1,47 @@
 <template>
     <div>
         <el-main>
-            <el-form :model="rentalTypeModel" size="small" :inline="true">
-                <el-form-item label="出租类型名称">
+            <el-form :model="rentalTypeModel" size="small" :inline="true" label-width="100px">
+                <el-form-item label="出租类型名称:">
                     <el-input v-model="rentalTypeModel.typeName" placeholder="出租类型名称"></el-input>
                 </el-form-item>
-                <el-form-item label="最低折扣">
+                <el-form-item label="最低折扣:">
                     <el-input-number :max="1" :min="0" :step="0.01" v-model="rentalTypeModel.lowDiscount"
                         placeholder="最低折扣"></el-input-number>
                 </el-form-item>
-                <el-form-item label="最高折扣">
+                <el-form-item label="最高折扣:">
                     <el-input-number :max="1" :min="0" :step="0.01" v-model="rentalTypeModel.highDiscount"
                         placeholder="最高折扣"></el-input-number>
                 </el-form-item>
-                <el-form-item>
-                    <el-button type="primary" @click="onSubmit" icon="el-icon-search">查询</el-button>
-                    <el-button type="warning" @click="resetForm" icon="el-icon-refresh">重置</el-button>
-                    <el-button type="success" @click="handleCreate" icon="el-icon-plus">新增</el-button>
-                    <el-button type="danger" @click="deleteBatch" icon="el-icon-delete">删除选中</el-button>
+                <el-form-item label="操作:">
+                    <el-button type="primary" @click="onSubmit" :icon="getPermissionIcon('busi:rentalType:select')"
+                        v-if="hasPermission('busi:rentalType:select')">查询</el-button>
+                    <el-button type="warning" @click="resetForm" :icon="getPermissionIcon('busi:rentalType:reset')"
+                        v-if="hasPermission('busi:rentalType:reset')">重置</el-button>
+                    <el-button type="success" @click="handleCreate" :icon="getPermissionIcon('busi:rentalType:add')"
+                        v-if="hasPermission('busi:rentalType:add')">新增</el-button>
+                    <el-button type="danger" @click="deleteBatch" :icon="getPermissionIcon('busi:rentalType:delete')"
+                        v-if="hasPermission('busi:rentalType:delete')">删除选中</el-button>
                 </el-form-item>
             </el-form>
-            <el-table :data="tableData" style="width: 100%;margin-bottom: 20px" border stripe
+            <el-table :data="tableData" style="width: 885px;margin-bottom: 20px" border stripe
                 @selection-change="handelSelectChange">
                 <el-table-column type="selection" width="55"></el-table-column>
-                <el-table-column label="序号" width="88">
+                <el-table-column label="序号" width="55">
                     <template slot-scope="scope">
                         {{ (start - 1) * size + scope.$index + 1 }}
                     </template>
                 </el-table-column>
-                <el-table-column prop="typeName" label="出租类型名称"></el-table-column>
-                <el-table-column prop="typeDiscount" label="折扣"></el-table-column>
-                <el-table-column prop="remark" label="备注"></el-table-column>
+                <el-table-column prop="typeName" label="出租类型名称" width="150"></el-table-column>
+                <el-table-column prop="typeDiscount" label="折扣" width="70"></el-table-column>
+                <el-table-column prop="remark" label="备注" width="300"></el-table-column>
                 <el-table-column label="操作" width="250">
                     <template slot-scope="scope">
-                        <el-button type="primary" icon="el-icon-edit" @click="handleEdit(scope.row)">编辑</el-button>
-                        <el-button type="danger" icon="el-icon-delete" @click="handleDelete(scope.row)">删除</el-button>
+                        <el-button type="primary" :icon="getPermissionIcon('busi:rentalType:edit')"
+                            @click="handleEdit(scope.row)" v-if="hasPermission('busi:rentalType:edit')">编辑</el-button>
+                        <el-button type="danger" :icon="getPermissionIcon('busi:rentalType:delete')"
+                            @click="handleDelete(scope.row)"
+                            v-if="hasPermission('busi:rentalType:delete')">删除</el-button>
                     </template>
                 </el-table-column>
             </el-table>

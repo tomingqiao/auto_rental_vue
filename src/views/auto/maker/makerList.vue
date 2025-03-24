@@ -3,36 +3,40 @@
         <el-main>
             <!--查询表单-->
             <el-form :inline="true" :model="makerModel" size="small" label-width="100px">
-                <el-form-item label="汽车厂商名称">
+                <el-form-item label="汽车厂商名称:">
                     <el-input v-model="makerModel.name" placeholder="请输入汽车厂商名称"></el-input>
                 </el-form-item>
-                <el-form-item>
-                    <el-button type="primary" icon="el-icon-search" @click="onSubmit">查询</el-button>
-                    <el-button type="warning" icon="el-icon-refresh" @click="resetForm">重置</el-button>
-                    <el-button type="success" icon="el-icon-plus" @click="handleCreate">新增</el-button>
-                    <el-button type="danger" icon="el-icon-delete" @click="deleteBatch">删除选中</el-button>
+                <el-form-item label="操作:">
+                    <el-button type="primary" :icon="getPermissionIcon('auto:maker:select')"
+                        v-if="hasPermission('auto:maker:select')" @click="onSubmit">查询</el-button>
+                    <el-button type="warning" :icon="getPermissionIcon('auto:maker:reset')" @click="resetForm"
+                        v-if="hasPermission('auto:maker:reset')">重置</el-button>
+                    <el-button type="success" :icon="getPermissionIcon('auto:maker:add')" @click="handleCreate"
+                        v-if="hasPermission('auto:maker:add')">新增</el-button>
+                    <el-button type="danger" :icon="getPermissionIcon('auto:maker:delete')" @click="deleteBatch"
+                        v-if="hasPermission('auto:maker:delete')">删除选中</el-button>
                 </el-form-item>
             </el-form>
             <!--表单结束-->
             <!--数据表格-->
-            <el-table :data="tableData" style="width: 100%;margin-bottom: 20px" border stripe
+            <el-table :data="tableData" style="width: 615px;margin-bottom: 20px" border stripe
                 @selection-change="handelSelectChange">
                 <el-table-column type="selection" width="55"> </el-table-column>
-                <el-table-column label="序号" width="88">
+                <el-table-column label="序号" width="55">
                     <template slot-scope="scope">
                         {{ (start - 1) * size + scope.$index + 1 }}
                     </template>
                 </el-table-column>
-                <el-table-column prop="name" label="汽车厂商名称">
+                <el-table-column prop="name" label="汽车厂商名称" width="200">
                 </el-table-column>
-                <el-table-column prop="orderLetter" label="排序字母">
+                <el-table-column prop="orderLetter" label="排序字母" width="100">
                 </el-table-column>
-                <el-table-column label="操作">
+                <el-table-column label="操作" width="200">
                     <template slot-scope="scope">
-                        <el-button type="primary" icon="el-icon-edit" size="mini"
-                            @click="handleEdit(scope.row)">编辑</el-button>
-                        <el-button type="danger" icon="el-icon-delete" size="mini"
-                            @click="handleDelete(scope.row)">删除</el-button>
+                        <el-button type="primary" :icon="getPermissionIcon('auto:maker:edit')" size="mini"
+                            v-if="hasPermission('auto:maker:edit')" @click="handleEdit(scope.row)">编辑</el-button>
+                        <el-button type="danger" :icon="getPermissionIcon('auto:maker:delete')" size="mini"
+                            v-if="hasPermission('auto:maker:delete')" @click="handleDelete(scope.row)">删除</el-button>
                     </template>
                 </el-table-column>
             </el-table>

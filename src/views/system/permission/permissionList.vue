@@ -6,6 +6,8 @@
                 <el-form-item label="操作:">
                     <el-button type="success" :icon="getPermissionIcon('sys:permission:add')"
                         v-if="hasPermission('sys:permission:add')" @click="handleCreate">新增</el-button>
+                    <el-button type="primary" :icon="getPermissionIcon('sys:permission:export')"
+                        v-if="hasPermission('sys:permission:export')" @click="exportExcel">导出Excel</el-button>
                 </el-form-item>
             </el-form>
             <!--表单结束-->
@@ -108,6 +110,7 @@
 </template>
 <script>
 import permissionApi from "@/api/permission"
+import { getToken } from '@/utils/auth'
 export default {
     name: 'permissionList',
     data() {
@@ -327,6 +330,10 @@ export default {
                 }
             }
             return false
+        },
+        exportExcel() {
+            let url = `${process.env.VUE_APP_BASE_API}/rental/permission/exportExcel?token=${getToken()}`
+            window.open(url)
         }
     }
 }

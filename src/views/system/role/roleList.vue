@@ -15,6 +15,8 @@
                         v-if="hasPermission('sys:role:add')">新增</el-button>
                     <el-button type="danger" :icon="getPermissionIcon('sys:role:delete')" @click="deleteBatch"
                         v-if="hasPermission('sys:role:delete')">删除选中</el-button>
+                    <el-button type="primary" :icon="getPermissionIcon('sys:role:export')" @click="exportExcel"
+                        v-if="hasPermission('sys:role:export')">导出Excel</el-button>
                 </el-form-item>
             </el-form>
             <!--表单结束-->
@@ -82,6 +84,7 @@
 </template>
 <script>
 import roleApi from '@/api/auth_role'
+import { getToken } from '@/utils/auth'
 export default {
     name: 'roleList',
     data() {
@@ -274,6 +277,10 @@ export default {
             } else {
                 this.$message.error('权限分配失败')
             }
+        },
+        exportExcel() {
+            let url = `${process.env.VUE_APP_BASE_API}/rental/role/exportExcel?token=${getToken()}`
+            window.open(url)
         }
     }
 }

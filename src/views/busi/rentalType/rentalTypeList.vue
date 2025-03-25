@@ -22,6 +22,8 @@
                         v-if="hasPermission('busi:rentalType:add')">新增</el-button>
                     <el-button type="danger" @click="deleteBatch" :icon="getPermissionIcon('busi:rentalType:delete')"
                         v-if="hasPermission('busi:rentalType:delete')">删除选中</el-button>
+                    <el-button type="primary" @click="exportExcel" :icon="getPermissionIcon('busi:rentalType:export')"
+                        v-if="hasPermission('busi:rentalType:export')">导出Excel</el-button>
                 </el-form-item>
             </el-form>
             <el-table :data="tableData" style="width: 885px;margin-bottom: 20px" border stripe
@@ -71,6 +73,7 @@
 </template>
 <script>
 import rentalTypeApi from '@/api/rental_type'
+import { getToken } from '@/utils/auth'
 export default {
     name: 'rentalTypeList',
     data() {
@@ -213,6 +216,10 @@ export default {
                 }
             })
         },
+        exportExcel() {
+            let url = `${process.env.VUE_APP_BASE_API}/rental/rentalType/exportExcel?token=${getToken()}`
+            window.open(url)
+        }
     }
 }
 </script>

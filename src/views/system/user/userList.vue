@@ -31,6 +31,8 @@
                         v-if="hasPermission('sys:user:add')">新增</el-button>
                     <el-button type="danger" :icon="getPermissionIcon('sys:user:delete')" @click="deleteBatch"
                         v-if="hasPermission('sys:user:delete')">删除选中</el-button>
+                    <el-button type="primary" :icon="getPermissionIcon('sys:user:export')" @click="exportExcel"
+                        v-if="hasPermission('sys:user:export')">导出Excel</el-button>
                 </el-form-item>
             </el-form>
             <el-table :data="tableData" style="width: 100%;margin-bottom: 20px" border stripe
@@ -145,6 +147,7 @@ import userApi from '@/api/auth_user'
 import deptApi from '@/api/dept'
 import roleApi from '@/api/auth_role'
 import getPermissionIcon from '@/api/icon'
+import { getToken } from '@/utils/auth'
 export default {
     data() {
         return {
@@ -386,6 +389,10 @@ export default {
                 this.dialogRoleVisible = false
                 this.search()
             }
+        },
+        exportExcel() {
+            let url = `${process.env.VUE_APP_BASE_API}/rental/user/exportExcel?token=${getToken()}`
+            window.open(url)
         }
     }
 }

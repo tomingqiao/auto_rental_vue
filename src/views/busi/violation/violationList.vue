@@ -36,6 +36,8 @@
                         v-if="hasPermission('busi:violation:add')">新增</el-button>
                     <el-button type="danger" @click="deleteBatch()" :icon="getPermissionIcon('busi:violation:delete')"
                         v-if="hasPermission('busi:violation:delete')">批量删除</el-button>
+                    <el-button type="primary" @click="exportExcel()" :icon="getPermissionIcon('busi:violation:export')"
+                        v-if="hasPermission('busi:violation:export')">导出Excel</el-button>
                 </el-form-item>
             </el-form>
             <el-table :data="tableData" style="width: 1245px;margin-bottom: 20px" border stripe
@@ -113,6 +115,7 @@
 <script>
 import violationApi from '@/api/violation';
 import autoInfoApi from '@/api/auto_info';
+import { getToken } from '@/utils/auth'
 export default {
     name: 'violationList',
     data() {
@@ -322,6 +325,10 @@ export default {
                 }
             })
         },
+        exportExcel() {
+            let url = `${process.env.VUE_APP_BASE_API}/rental/violation/exportExcel?token=${getToken()}`
+            window.open(url)
+        }
     }
 }
 </script>

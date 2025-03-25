@@ -15,6 +15,8 @@
                         v-if="hasPermission('auto:maker:add')">新增</el-button>
                     <el-button type="danger" :icon="getPermissionIcon('auto:maker:delete')" @click="deleteBatch"
                         v-if="hasPermission('auto:maker:delete')">删除选中</el-button>
+                    <el-button type="primary" :icon="getPermissionIcon('auto:maker:export')"
+                        v-if="hasPermission('auto:maker:export')" @click="exportExcel">导出Excel</el-button>
                 </el-form-item>
             </el-form>
             <!--表单结束-->
@@ -65,6 +67,7 @@
 </template>
 <script>
 import makerApi from '@/api/auto_maker'
+import { getToken } from '@/utils/auth'
 export default {
     name: 'makerList',
     data() {
@@ -212,6 +215,10 @@ export default {
                 }
             })
         },
+        exportExcel() {
+            let url = `${process.env.VUE_APP_BASE_API}/rental/maker/exportExcel?token=${getToken()}`
+            window.open(url)
+        }
     }
 }
 </script>

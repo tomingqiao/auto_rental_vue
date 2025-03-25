@@ -13,6 +13,8 @@
                         v-if="hasPermission('sys:dept:reset')" @click="resetForm">重置</el-button>
                     <el-button type="success" :icon="getPermissionIcon('sys:dept:add')"
                         v-if="hasPermission('sys:dept:add')" @click="handleCreate">新增</el-button>
+                    <el-button type="primary" :icon="getPermissionIcon('sys:dept:export')"
+                        v-if="hasPermission('sys:dept:export')" @click="exportExcel">导出Excel</el-button>
                 </el-form-item>
             </el-form>
             <!--表单结束-->
@@ -79,6 +81,7 @@
 </template>
 <script>
 import deptApi from "@/api/dept"
+import { getToken } from '@/utils/auth'
 export default {
     name: 'deptList',
     data() {
@@ -234,6 +237,10 @@ export default {
             if (res.success) {
                 this.treeData = res.data
             }
+        },
+        exportExcel() {
+            let url = `${process.env.VUE_APP_BASE_API}/rental/dept/exportExcel?token=${getToken()}`
+            window.open(url)
         }
     }
 }

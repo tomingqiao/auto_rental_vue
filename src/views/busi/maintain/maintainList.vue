@@ -31,6 +31,8 @@
                         v-if="hasPermission('busi:maintain:add')">新增</el-button>
                     <el-button type="danger" @click="deleteBatch" :icon="getPermissionIcon('busi:maintain:delete')"
                         v-if="hasPermission('busi:maintain:delete')">批量删除</el-button>
+                    <el-button type="primary" :icon="getPermissionIcon('busi:maintain:export')"
+                        v-if="hasPermission('busi:maintain:export')" @click="exportExcel">导出Excel</el-button>
                 </el-form-item>
             </el-form>
             <el-table :data="tableData" style="width: 1165px;margin-bottom: 20px" border stripe
@@ -67,7 +69,7 @@
                                 <span style="float: left">{{ item.autoNum }}</span>
                                 <span style="float: right; color: #8492a6; font-size: 13px">未保次数：{{ item.expectedNum
                                     - item.actualNum
-                                    }}</span>
+                                }}</span>
                             </el-option>
                         </el-select>
                     </el-form-item>
@@ -98,6 +100,7 @@
 <script>
 import maintainApi from '@/api/maintain'
 import autoInfoApi from '@/api/auto_info'
+import { getToken } from '@/utils/auth'
 export default {
     name: 'maintainList',
     data() {
@@ -288,6 +291,10 @@ export default {
                     }
                 }
             })
+        },
+        exportExcel() {
+            let url = `${process.env.VUE_APP_BASE_API}/rental/maintain/exportExcel?token=${getToken()}`
+            window.open(url)
         }
     }
 }

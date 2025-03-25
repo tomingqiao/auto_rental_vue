@@ -19,6 +19,8 @@
                         v-if="hasPermission('busi:order:select')" @click="onSubmit">查询</el-button>
                     <el-button type="warning" :icon="getPermissionIcon('busi:order:reset')"
                         v-if="hasPermission('busi:order:reset')" @click="resetForm">重置</el-button>
+                    <el-button type="primary" :icon="getPermissionIcon('busi:order:export')"
+                        v-if="hasPermission('busi:order:export')" @click="exportExcel">导出Excel</el-button>
                 </el-form-item>
             </el-form>
             <el-table stripe border :data="tableData" style="width: 100%;margin-bottom: 20px">
@@ -110,6 +112,7 @@
 </template>
 <script>
 import orderApi from '@/api/order'
+import { getToken } from '@/utils/auth'
 export default {
     name: 'orderList',
     data() {
@@ -177,6 +180,10 @@ export default {
                     });
                 }
             }
+        },
+        exportExcel() {
+            let url = `${process.env.VUE_APP_BASE_API}/rental/order/exportExcel?token=${getToken()}`
+            window.open(url)
         }
     }
 }

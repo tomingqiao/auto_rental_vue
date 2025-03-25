@@ -36,6 +36,8 @@
                         v-if="hasPermission('busi:customer:add')">新增</el-button>
                     <el-button type="danger" @click="deleteBatch" :icon="getPermissionIcon('busi:customer:delete')"
                         v-if="hasPermission('busi:customer:delete')">批量删除</el-button>
+                    <el-button type="primary" :icon="getPermissionIcon('busi:customer:export')"
+                        v-if="hasPermission('busi:customer:export')" @click="exportExcel">导出Excel</el-button>
                 </el-form-item>
             </el-form>
             <el-table :data="tableData" style="width: 1095px;margin-bottom: 20px" border stripe
@@ -120,6 +122,7 @@
 </template>
 <script>
 import customerApi from '@/api/customer';
+import { getToken } from '@/utils/auth'
 export default {
     name: 'customerList',
     data() {
@@ -282,6 +285,10 @@ export default {
                 this.saveCustomer.gender = idNum.substring(16, 17) % 2 === 0 ? 0 : 1
                 this.saveCustomer.age = new Date().getFullYear() - parseInt(idNum.substring(6, 10))
             }
+        },
+        exportExcel() {
+            let url = `${process.env.VUE_APP_BASE_API}/rental/customer/exportExcel?token=${getToken()}`
+            window.open(url)
         }
     }
 }

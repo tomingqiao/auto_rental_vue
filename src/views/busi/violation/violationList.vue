@@ -40,7 +40,7 @@
                         v-if="hasPermission('busi:violation:export')">导出Excel</el-button>
                 </el-form-item>
             </el-form>
-            <el-table :data="tableData" style="width: 1245px;margin-bottom: 20px" border stripe
+            <el-table :data="tableData" style="width: 1295px;margin-bottom: 20px" border stripe
                 @selection-change="handelSelectChange">
                 <el-table-column type="selection" width="55" fixed></el-table-column>
                 <el-table-column label="序号" width="55" fixed>
@@ -60,7 +60,7 @@
                         <el-tag v-else type="danger">未处理</el-tag>
                     </template>
                 </el-table-column>
-                <el-table-column label="操作" width="200">
+                <el-table-column label="操作" width="250">
                     <template slot-scope="scope">
                         <el-button type="primary" @click="handleEdit(scope.row)"
                             :icon="getPermissionIcon('busi:violation:edit')"

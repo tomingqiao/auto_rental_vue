@@ -161,6 +161,7 @@ export default {
                 ],
             },
             saveCustomer: {},
+            multipleSelection: [],
             titleMap: {
                 create: '新增',
                 update: '编辑'
